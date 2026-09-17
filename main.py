@@ -35,6 +35,8 @@ class PasswordGeneratorGUI:
         self.master.geometry("450x600")
         self.master.minsize(400, 550)
 
+        self.master.configure(bg="#1a1a2e")
+
         # Character sets - stored as class attributes
         # This is a best practice: keep constants in __init__
         self.letters = string.ascii_letters  # 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -57,37 +59,49 @@ class PasswordGeneratorGUI:
         # ===========================================
         # TITLE SECTION (Top Bar)
         # ===========================================
-        title_frame = tk.Frame(self.master, bg="#2c3e50", height=45)
+        title_frame = tk.Frame(self.master, bg="#16213e", height=50)
         title_frame.pack(fill=tk.X)
 
         title_label = tk.Label(
             title_frame,
             text="🔐 Password Generator - Learning Edition",
-            font=("Helvetica", 18, "bold"),
-            fg="white",
-            bg="#2c3e50"
+            font=("Helvetica", 16, "bold"),
+            fg="#4db8ff",
+            bg="#16213e"
         )
         title_label.pack(pady=5)
+
+        subtitle_label = tk.Label(
+            title_frame,
+            text="Generate secure, random passwords instantly!",
+            font=("Helvetica", 10, "italic"),
+            fg="#7289da",
+            bg="#16213e"
+        )
+        subtitle_label.pack(pady=3)
 
         # ===========================================
         # PASSWORD DISPLAY SECTION
         # ===========================================
-        display_frame = tk.Frame(self.master, bg="#3498db", bd=3, relief="raised")
-        display_frame.pack(fill=tk.X, pady=(10, 15))
+        display_frame = tk.Frame(self.master, bg="#0f3460", bd=2, relief="flat")
+        display_frame.pack(fill=tk.X, pady=(15, 20))
+
+        password_bg_color = "#1a1a2e"
 
         self.password_label = tk.Label(
             display_frame,
             text="👆 Drag slider • Select options • Generate!",
-            font=("Helvetica", 12),
-            fg="#ecf0f1",
-            bg="#3498db"
+            font=("Helvetica", 11),
+            fg="#4db8ff",
+            bg=display_frame.cget("bg"),
+            wraplength=350
         )
-        self.password_label.pack(expand=True)
+        self.password_label.pack(expand=True, padx=20)
 
         # ===========================================
         # VISUAL SLIDER BAR (Proton Pass Style)
         # ===========================================
-        slider_frame = tk.Frame(self.master, bg="#ecf0f1")
+        slider_frame = tk.Frame(self.master, bg="#16213e")
         slider_frame.pack(fill=tk.X, pady=(0, 20))
 
         # Slider configuration - range from 8 to 64 characters
@@ -100,12 +114,12 @@ class PasswordGeneratorGUI:
             to=max_len,
             orient=tk.HORIZONTAL,
             length=300,
-            bg="#ecf0f1",
-            troughcolor="#bdc3c7",
+            bg="#1a1a2e",
+            troughcolor="#1a1a2e",
             highlightthickness=0,
-            width=28,
+            width=26,
             relief=tk.FLAT,
-            activebackground="#e74c3c"  # Red bar when dragging
+            activebackground="#4db8ff",  # Blue bar when dragging
         )
 
         # Configure slider visual appearance
@@ -114,18 +128,18 @@ class PasswordGeneratorGUI:
         self.value_label = tk.Label(
             slider_frame,
             text=f"Length: {min_len}",
-            font=("Helvetica", 11),
-            bg="#ecf0f1",
-            fg="#2c3e50",
-            relief="raised",
-            padx=10
+            font=("Helvetica", 10),
+            bg="#1a1a2e",
+            fg="#4db8ff",
+            relief=tk.FLAT,
+            padx=15
         )
         self.value_label.pack()
 
         # ===========================================
         # CHARACTER TYPE CHECKBOXES
         # ===========================================
-        check_frame = tk.Frame(self.master, bg="#ecf0f1")
+        check_frame = tk.Frame(self.master, bg="#16213e")
         check_frame.pack(fill=tk.X, pady=(20, 15))
 
         # Using BooleanVar for checkbox state management
@@ -136,79 +150,80 @@ class PasswordGeneratorGUI:
         # Create checkboxes with proper alignment
         tk.Checkbutton(
             check_frame,
-            text="✓ Include Letters (a-z A-Z)",
+            text="🔤 Letters (a-z A-Z)",
             variable=self.letters_var,
-            width=25
-        ).pack(anchor=tk.W, pady=5)
+            width=20
+        ).pack(anchor=tk.W, pady=5, side=tk.LEFT)
 
         tk.Checkbutton(
             check_frame,
-            text="✓ Include Numbers (0-9)",
+            text="🔢 Numbers (0-9)",
             variable=self.digits_var,
-            width=25
-        ).pack(anchor=tk.W, pady=5)
+            width=18
+        ).pack(anchor=tk.W, pady=5, side=tk.LEFT)
 
         tk.Checkbutton(
             check_frame,
-            text="✓ Include Symbols (!@#$%)",
+            text="⚡ Symbols (!@#$%)",
             variable=self.symbols_var,
-            width=25
-        ).pack(anchor=tk.W, pady=5)
+            width=20
+        ).pack(anchor=tk.W, pady=5, side=tk.LEFT)
 
         # ===========================================
         # GENERATE AND COPY BUTTONS
         # ===========================================
-        btn_container = tk.Frame(self.master, bg="#ecf0f1")
+        btn_container = tk.Frame(self.master, bg="#16213e")
         btn_container.pack(fill=tk.X, pady=15)
 
         self.generate_btn = tk.Button(
             btn_container,
             text="🔐 Generate Password",
             command=self._generate_password,
-            bg="#27ae60",
-            fg="white",
-            font=("Helvetica", 13, "bold"),
+            bg="#4db8ff",
+            fg="#1a1a2e",
+            font=("Helvetica", 12, "bold"),
             relief=tk.FLAT,
-            width=28,
+            width=25,
             height=2,
-            activebackground="#2ecc71"
+            activebackground="#7289da",
         )
-        self.generate_btn.pack(pady=(0, 5))
+        self.generate_btn.pack(pady=(0, 10))
 
         self.copy_btn = tk.Button(
             btn_container,
             text="📋 Copy to Clipboard",
             command=self._copy_password,
             state=tk.DISABLED,  # Disabled until password generated
-            bg="#3498db",
-            fg="white",
-            font=("Helvetica", 12),
+            bg="#7289da",
+            fg="#1a1a2e",
+            font=("Helvetica", 11),
             relief=tk.FLAT,
-            width=28,
-            height=2
+            width=25,
+            height=2,
+            activebackground="#4db8ff"
         )
-        self.copy_btn.pack(pady=(0, 5))
+        self.copy_btn.pack(pady=(0, 10))
 
         # ===========================================
         # OUTPUT TEXT BOX
         # ===========================================
-        output_frame = tk.Frame(self.master, bg="#ecf0f1")
-        output_frame.pack(fill=tk.BOTH, pady=10)
+        output_frame = tk.Frame(self.master, bg="#16213e")
+        output_frame.pack(fill=tk.BOTH, pady=5)
 
         self.output_text = scrolledtext.ScrolledText(
             output_frame,
-            height=3,
-            font=("Helvetica", 12),
-            bg="#2c3e50",
+            height=4,
+            font=("Helvetica", 11),
+            bg="#0f3460",
             fg="#ecf0f1",
-            insertbackground="white"
+            insertbackground="#ecf0f1",
         )
-        self.output_text.pack(fill=tk.X)
+        self.output_text.pack(fill=tk.X, padx=20)
 
         # ===========================================
         # FOOTER INFO
         # ===========================================
-        footer_frame = tk.Frame(self.master, bg="#ecf0f1")
+        footer_frame = tk.Frame(self.master, bg="#16213e")
         footer_frame.pack(fill=tk.X, padx=20, pady=(15, 20))
 
         footer_label = tk.Label(
@@ -218,8 +233,8 @@ class PasswordGeneratorGUI:
                  "• random = Cryptographically safe generation\n"
                  "• Class design = OOP best practices",
             font=("Helvetica", 9),
-            bg="#ecf0f1",
-            fg="#7f8c8d",
+            bg="#16213e",
+            fg="#7289da",
             justify=tk.LEFT,
             anchor=tk.W
         )
@@ -228,16 +243,16 @@ class PasswordGeneratorGUI:
         # ===========================================
         # SECURITY NOTICE
         # ===========================================
-        security_frame = tk.Frame(self.master, bg="#e74c3c")
+        security_frame = tk.Frame(self.master, bg="#c0392b")
         security_frame.pack(fill=tk.X)
 
         security_label = tk.Label(
             security_frame,
             text="⚠️ NEVER share passwords publicly\n"
                  "Use a password manager (Bitwarden/1Password)",
-            font=("Helvetica", 9),
-            fg="white",
-            bg="#e74c3c"
+            font=("Helvetica", 8),
+            fg="#ffffff",
+            bg="#c0392b",
         )
         security_label.pack(pady=5)
 
@@ -298,7 +313,8 @@ class PasswordGeneratorGUI:
             self.copy_btn.config(state=tk.NORMAL)
 
             # Update status label
-            self.password_label.config(text=f"✅ {current_len}-character password generated!")
+            self.password_label.config(text=f"✅ {current_len}-character password generated!",
+                                       fg="#27ae60")
 
             self.is_generated = True
 
@@ -312,6 +328,11 @@ class PasswordGeneratorGUI:
             # Clear and paste - standard clipboard operations
             self.master.clipboard_clear()
             self.master.clipboard_append(self.password)
+
+            self.copy_btn.config(
+                bg="#27ae60",
+                text="✅ Copied to Clipboard!"
+            )
 
             # Show success message
             messagebox.showinfo(
